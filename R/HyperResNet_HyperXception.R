@@ -2,12 +2,14 @@
 #'
 #' @description A ResNet HyperModel.
 #'
-#' @details # Arguments: include_top: whether to include the fully-connected layer at the top of the network. input_shape: Optional shape list, e.g. `(256, 256, 3)`. One of `input_shape` or `input_tensor` must be specified. input_tensor: Optional Keras tensor (i.e. output of `layers.Input()`) to use as image input for the model. One of `input_shape` or `input_tensor` must be specified. classes: optional number of classes to classify images into, only to be specified if `include_top` is TRUE, and if no `weights` argument is specified. **kwargs: Additional keyword arguments that apply to all HyperModels. See `kerastuner.HyperModel`.
-#'
 #' @param include_top whether to include the fully-connected layer at the top of the network.
-#' @param input_shape Optional shape list, e.g. `(256, 256, 3)`. One of `input_shape` or `input_tensor` must be specified.
-#' @param input_tensor Optional Keras tensor (i.e. output of `layers.Input()`) to use as image input for the model. One of `input_shape` or `input_tensor` must be specified.
-#' @param classes optional number of classes to classify images into, only to be specified if `include_top` is TRUE, and if no `weights` argument is specified. **kwargs: Additional keyword arguments that apply to all HyperModels. See `kerastuner.HyperModel`.
+#' @param input_shape Optional shape list, e.g. `(256, 256, 3)`. One of `input_shape` or 
+#' `input_tensor` must be specified.
+#' @param input_tensor Optional Keras tensor (i.e. output of `layers.Input()`) to use as image 
+#' input for the model. One of `input_shape` or `input_tensor` must be specified.
+#' @param classes optional number of classes to classify images into, only to be specified if 
+#' `include_top` is TRUE, and if no `weights` argument is specified. **kwargs: Additional keyword 
+#' arguments that apply to all HyperModels. See `kerastuner.HyperModel`.
 #' @return a pre-trained ResNet model
 #' @examples
 #' 
@@ -55,12 +57,14 @@ HyperResNet <- function(include_top = TRUE, input_shape = NULL, input_tensor = N
 #'
 #' @description An Xception HyperModel.
 #'
-#' @details Arguments: include_top: whether to include the fully-connected layer at the top of the network. input_shape: Optional shape list, e.g. `(256, 256, 3)`. One of `input_shape` or `input_tensor` must be specified. input_tensor: Optional Keras tensor (i.e. output of `layers.Input()`) to use as image input for the model. One of `input_shape` or `input_tensor` must be specified. classes: optional number of classes to classify images into, only to be specified if `include_top` is TRUE, and if no `weights` argument is specified. **kwargs: Additional keyword arguments that apply to all HyperModels. See `kerastuner.HyperModel`.
-#'
 #' @param include_top whether to include the fully-connected layer at the top of the network.
-#' @param input_shape Optional shape list, e.g. `(256, 256, 3)`. One of `input_shape` or `input_tensor` must be specified.
-#' @param input_tensor Optional Keras tensor (i.e. output of `layers.Input()`) to use as image input for the model. One of `input_shape` or `input_tensor` must be specified.
-#' @param classes optional number of classes to classify images into, only to be specified if `include_top` is TRUE, and if no `weights` argument is specified. **kwargs: Additional keyword arguments that apply to all HyperModels. See `kerastuner.HyperModel`.
+#' @param input_shape Optional shape list, e.g. `(256, 256, 3)`. One of `input_shape` or 
+#' `input_tensor` must be specified.
+#' @param input_tensor Optional Keras tensor (i.e. output of `layers.Input()`) to use as 
+#' image input for the model. One of `input_shape` or `input_tensor` must be specified.
+#' @param classes optional number of classes to classify images into, only to be specified 
+#' if `include_top` is TRUE, and if no `weights` argument is specified. **kwargs: Additional 
+#' keyword arguments that apply to all HyperModels. See `kerastuner.HyperModel`.
 #' @return a pre-trained Xception model
 #' @export
 HyperXception <- function(include_top = TRUE, input_shape = NULL, input_tensor = NULL, classes = NULL) {
@@ -102,6 +106,8 @@ HyperXception <- function(include_top = TRUE, input_shape = NULL, input_tensor =
 #' @param tune_new_entries Whether hyperparameter entries that are requested by the hypermodel 
 #' but that were not specified in hyperparameters should be added to the search space, or not. 
 #' If not, then the default value for these parameters will be used.
+#' @param allow_new_entries Whether the hypermodel is allowed to request hyperparameter entries not listed in 
+#' `hyperparameters`. **kwargs: Keyword arguments relevant to all `Tuner` subclasses. Please see the docstring for `Tuner`.
 #' @param distribution_strategy Scale up from running single-threaded locally to running on dozens or 
 #' hundreds of workers in parallel. Distributed Keras Tuner uses a chief-worker model. The chief runs a 
 #' service to which the workers report results and query for the hyperparameters to try next. The chief 
@@ -121,21 +127,22 @@ HyperXception <- function(include_top = TRUE, input_shape = NULL, input_tensor =
 #' Li, Lisha, and Kevin Jamieson. ["Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization." Journal of Machine Learning Research 18 (2018): 1-52]( http://jmlr.org/papers/v18/16-558.html).
 #'
 #' @export
-Hyperband <- function(hypermodel = NULL, optimizer = NULL, loss = NULL,
+Hyperband <- function(hypermodel, optimizer = NULL, loss = NULL,
                       metrics = NULL,
                       hyperparameters = NULL, 
-                      objective = NULL, max_epochs = NULL, factor = NULL,
-                      hyperband_iterations = NULL,
+                      objective, max_epochs, factor = 3,
+                      hyperband_iterations = 1,
                       seed = NULL,
                       tune_new_entries = TRUE,
+                      allow_new_entries = TRUE,
                       distribution_strategy = NULL,
                       directory = NULL, project_name = NULL,
                       ...) {
   
-  args = c(hypermodel = hypermodel, 
+  args = list(hypermodel = hypermodel, 
+              optimizer = optimizer,
               objective = objective, 
               loss = loss,
-              optimizer = optimizer,
               metrics = metrics,
               hyperparameters = hyperparameters,
               max_epochs = as.integer(max_epochs), 
@@ -147,6 +154,33 @@ Hyperband <- function(hypermodel = NULL, optimizer = NULL, loss = NULL,
               directory = directory, 
               project_name = project_name,
               ...)
+  
+  if(is.null(optimizer))
+    args$optimizer <- NULL
+  
+  if(is.null(loss))
+    args$loss <- NULL
+  
+  if(is.null(metrics))
+    args$metrics <- NULL
+  
+  if(is.null(hyperparameters))
+    args$hyperparameters <- NULL
+  
+  if(is.null(seed))
+    args$seed <- NULL
+  else
+    args$seed <- as.integer(args$seed)
+  
+  if(is.null(distribution_strategy))
+    args$distribution_strategy <- NULL
+  
+  if(is.null(directory))
+    args$directory <- NULL
+  
+  if(is.null(project_name))
+    args$project_name <- NULL
+  
   do.call(kerastuner$tuners$Hyperband, args)
 }
 

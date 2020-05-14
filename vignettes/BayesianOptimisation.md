@@ -8,9 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = F)
-```
+
 
 ## Subclassing Tuner for Custom Training Loops
 
@@ -25,8 +23,8 @@ The Tuner class at ```Tuner_class()``` can be subclassed to support advanced use
 
 Thanks to [Daniel Falbel from RStudio](https://github.com/dfalbel), the ```Bayesian Optimization``` example was successfully adapted.
 
-```{r }
 
+```r
 library(keras)
 library(tensorflow)
 library(dplyr)
@@ -129,12 +127,10 @@ MyTuner = PyClass(
 
 main = function () {
   tuner = MyTuner(
-    oracle=BayesianOptimization(
-      objective=Objective(name='loss', direction = 'min'),
-      max_trials=1),
-    hypermodel=conv_build_model,
-    directory='results2',
-    project_name='mnist_custom_training2')
+    oracle = BayesianOptimization(objective = Objective(name='loss', direction = list('min')), max_trials = 1),
+    hypermodel = conv_build_model,
+    directory = 'results2',
+    project_name = 'mnist_custom_training2')
   
   mnist_data = dataset_fashion_mnist()
   c(mnist_train, mnist_test) %<-%  mnist_data
@@ -153,5 +149,4 @@ main = function () {
 }
 
 main()
-
 ```
