@@ -29,11 +29,11 @@
 #'  to validate before stopping.
 #' @param ... Some additional arguments
 #' @return performs a search for best hyperparameter configuations
+#' @importFrom reticulate tuple
 #' @examples
 #' 
-#' \donttest{
-#' library(dplyr)
-#' library(kerastuneR)
+#' \dontrun{
+#' 
 #' library(keras)
 #' x_data <- matrix(data = runif(500,0,1),nrow = 50,ncol = 5) 
 #' y_data <-  ifelse(runif(50,0,1) > 0.6, 1L,0L) %>% as.matrix()
@@ -41,9 +41,9 @@
 #' y_data2 <-  ifelse(runif(50,0,1) > 0.6, 1L,0L) %>% as.matrix()
 #' 
 #' 
-#' HyperModel <- kerastuneR::PyClass(
+#' HyperModel <- PyClass(
 #'   'HyperModel',
-#'   inherit = kerastuneR::HyperModel_class(),
+#'   inherit = HyperModel_class(),
 #'   list(
 #'     
 #'     `__init__` = function(self, num_classes) {
@@ -111,7 +111,10 @@ fit_tuner <- function(tuner, x = NULL, y = NULL, steps_per_epoch = NULL, batch_s
   else
     args$epochs <- as.integer(epochs)
   
-  args$validation_data <- setNames(validation_data, NULL)
+  if(is.null(validation_data)) 
+    args$validation_data <- NULL
+  else
+    args$validation_data <- tuple(args$validation_data)
   
   if (is.null(args$validation_steps))
     args$validation_steps <- validation_steps

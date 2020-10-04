@@ -1,7 +1,7 @@
 Package: kerastuneR
 Type: Package
 Title: Interface to 'Keras Tuner'
-Version: 0.1.0.2
+Version: 0.1.0.3
 Authors@R: c(
   person("Turgut", "Abdullayev", role = c("aut", "cre"),
          email = "turqut.a.314@gmail.com"),  
@@ -20,15 +20,15 @@ BugReports: https://github.com/henry090/kerastuneR/issues
 SystemRequirements: TensorFlow >= 2.0 (https://www.tensorflow.org/)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports: reticulate, tensorflow, rstudioapi, plotly, data.table,
-        RJSONIO, rjson, tidyjson, dplyr, echarts4r, magick, crayon,
-        keras
-Suggests: knitr, rmarkdown, tfdatasets, testthat, purrr
+        RJSONIO, rjson, tidyjson, dplyr, echarts4r, crayon, keras,
+        magick
+Suggests: knitr, tfdatasets, testthat, purrr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-05-14 07:53:08 UTC; turgutabdullayev
+Packaged: 2020-10-04 13:12:22 UTC; turgut
 Author: Turgut Abdullayev [aut, cre],
   Google Inc. [cph]
 Repository: CRAN
-Date/Publication: 2020-05-14 08:10:02 UTC
+Date/Publication: 2020-10-04 13:30:02 UTC

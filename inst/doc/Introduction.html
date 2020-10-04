@@ -14,6 +14,22 @@
 
 <title>Introduction to kerastuneR</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 
@@ -224,14 +240,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>Currently, the package is available on github:</p>
-<pre><code>devtools::install_github('henry090/kerastuneR')</code></pre>
+<pre><code>devtools::install_github(&#39;henry090/kerastuneR&#39;)</code></pre>
 <p>Later, you need to install the python module kerastuner:</p>
-<pre><code>kerastuneR::install_kerastuner(python_path = 'paste python path')</code></pre>
+<pre><code>kerastuneR::install_kerastuner(python_path = &#39;paste python path&#39;)</code></pre>
 </div>
 <div id="usage-the-basics" class="section level2">
 <h2>Usage: the basics</h2>
 <p>Here’s how to perform hyperparameter tuning for a single-layer dense neural network using random search.</p>
-<p>First, we define a model-building function. It takes an argument <code>hp</code> from which you can sample hyperparameters, such as <code>hp$Int('units', min_value=32L, max_value=512L, step=32L)</code> (an integer from a certain range).</p>
+<p>First, we define a model-building function. It takes an argument <code>hp</code> from which you can sample hyperparameters, such as <code>hp$Int(&#39;units&#39;, min_value=32L, max_value=512L, step=32L)</code> (an integer from a certain range).</p>
 <p>Sample data:</p>
 <pre><code>x_data &lt;- matrix(data = runif(500,0,1),nrow = 50,ncol = 5)
 y_data &lt;-  ifelse(runif(50,0,1) &gt; 0.6, 1L,0L) %&gt;% as.matrix()
@@ -246,19 +262,19 @@ library(dplyr)
 build_model = function(hp) {
   
   model = keras_model_sequential()
-  model %&gt;% layer_dense(units=hp$Int('units',
+  model %&gt;% layer_dense(units=hp$Int(&#39;units&#39;,
                                       min_value=32,
                                       max_value=512,
                                       step=32),
                                       input_shape = ncol(x_data)
-                                      activation='relu') %&gt;% 
-  layer_dense(units=1, activation='sigmoid') %&gt;% 
+                                      activation=&#39;relu&#39;) %&gt;% 
+  layer_dense(units=1, activation=&#39;sigmoid&#39;) %&gt;% 
   compile(
     optimizer= tf$keras$optimizers$Adam(
-      hp$Choice('learning_rate',
+      hp$Choice(&#39;learning_rate&#39;,
                 values=c(1e-2, 1e-3, 1e-4))),
-    loss='binary_crossentropy',
-    metrics='accuracy') 
+    loss=&#39;binary_crossentropy&#39;,
+    metrics=&#39;accuracy&#39;) 
   return(model)
 }</code></pre>
 <p>Next, instantiate a tuner. You should specify the model-building function, the name of the objective to optimize (whether to minimize or maximize is automatically inferred for built-in metrics), the total number of trials <code>(max_trials)</code> to test, and the number of models that should be built and fit for each trial <code>(executions_per_trial)</code>.</p>
@@ -268,11 +284,11 @@ build_model = function(hp) {
 </blockquote>
 <pre><code>tuner = RandomSearch(
     build_model,
-    objective = 'val_accuracy',
+    objective = &#39;val_accuracy&#39;,
     max_trials = 5,
     executions_per_trial = 3,
-    directory = 'my_dir',
-    project_name = 'helloworld')</code></pre>
+    directory = &#39;my_dir&#39;,
+    project_name = &#39;helloworld&#39;)</code></pre>
 <p>You can print a summary of the search space:</p>
 <pre><code>tuner %&gt;% search_summary()</code></pre>
 <p>Then, start the search for the best hyperparameter configuration. The call to search has the same signature as <code>model %&gt;% fit()</code>. But here instead of <code>fit()</code> we call <code>fit_tuner()</code>.</p>

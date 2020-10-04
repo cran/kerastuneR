@@ -4,16 +4,18 @@
 \alias{HyperModel_class}
 \title{HyperModel}
 \usage{
-HyperModel_class()
+HyperModel_class(name = NULL, tunable = TRUE)
+}
+\arguments{
+\item{name}{The name of this HyperModel.}
+
+\item{tunable}{Whether the hyperparameters defined in this hypermodel should 
+be added to search space. If `FALSE`, either the search space for these parameters 
+must be defined in advance, or the default values will be used.}
 }
 \value{
 None
 }
 \description{
 Defines a searchable space of Models and builds Models from this space.
-}
-\details{
-# Attributes: name: The name of this HyperModel. tunable: Whether the hyperparameters defined in this hypermodel 
-should be added to search space. If `FALSE`, either the search space for these parameters must be defined in advance, 
-or the default values will be used.
 }
